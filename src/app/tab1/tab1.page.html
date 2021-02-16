@@ -1,0 +1,109 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="success">
+    <ion-title>
+      EMI Calculator
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <!-- <ion-datetime value="2019-10-01T15:43:40.394Z" display-timezone="utc"></ion-datetime> -->
+        <ion-label position="floating">Loan Amount (&#8377;)</ion-label>
+        <ion-input type="number" [(ngModel)]="calcInfo.loanAmount" placeholder="Loan Amount"> </ion-input>
+        <ion-range color="danger" class="ion-no-padding" (ionChange)="onRangeChange($event, 'loanAmount')"
+          [value]="calcInfo.loanAmount" pin="true" max="10000000"></ion-range>
+      </ion-col>
+      <ion-col size="6">
+        <ion-label position="floating">Interest Rate(%)</ion-label>
+        <ion-input type="number" [(ngModel)]="calcInfo.interestRate" placeholder="Loan Amount"> </ion-input>
+        <ion-range color="danger" class="ion-no-padding" (ionChange)="onRangeChange($event, 'interestRate')"
+          [value]="calcInfo.interestRate" pin="true" max="40"></ion-range>
+      </ion-col>
+      <ion-col size="6">
+        <ion-label position="floating">Tenure (Yearly)</ion-label>
+        <ion-input type="number" [(ngModel)]="calcInfo.tenure" placeholder="Tenure"> </ion-input>
+        <ion-range color="danger" class="ion-no-padding" (ionChange)="onRangeChange($event, 'tenure')"
+          [value]="calcInfo.tenure" pin="true" max="30"></ion-range>
+      </ion-col>
+      <ion-col size="12" class="ion-text-center ion-no-padding">
+        <ion-button color="success" (click)="calc()" class="ion-text-center"> Calculate </ion-button>
+      </ion-col>
+      <ion-col size="12" class="text-content">
+        <p class="ion-no-margin">Loan EMI : <b>{{emiInfo.loanEmi | number : '1.2-2' }} &#8377;</b></p>
+        <p class="ion-no-margin">Total Payment :<b>{{emiInfo.totalPayment | number : '1.2-2' }} &#8377;</b></p>
+        <p class="ion-no-margin">Total Interest Payable : <b>{{emiInfo.totalInterestPayment | number : '1.2-2' }}
+            &#8377;</b>
+        </p>
+      </ion-col>
+      <ion-col size="12" *ngIf="false">
+        <ion-slides pager="true" [options]="slideOpts">
+          <ion-slide>
+            <ion-card>
+              <ion-card-header>
+                Break-up of Total Payment
+              </ion-card-header>
+              <ion-card-content>
+                <canvas #pieCanvas></canvas>
+              </ion-card-content>
+            </ion-card>
+          </ion-slide>
+          <ion-slide>
+            <ion-card>
+              <ion-card-header>
+                Bar Chart
+              </ion-card-header>
+              <ion-card-content>
+                <canvas #barCanvas></canvas>
+              </ion-card-content>
+            </ion-card>
+          </ion-slide>
+          <ion-slide>
+            <ion-card>
+              <ion-card-header>
+                Line Chart
+              </ion-card-header>
+              <ion-card-content>
+                <canvas #lineCanvas></canvas>
+              </ion-card-content>
+            </ion-card>
+          </ion-slide>
+        </ion-slides>
+      </ion-col>
+
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-content>
+            <ion-slides pager="true" [options]="slideOpts">
+              <ion-slide >
+                <canvas style="height: 12rem;" #pieCanvas></canvas>
+              </ion-slide>
+              <ion-slide>
+                <canvas style="height: 12rem;" #barCanvas></canvas>
+              </ion-slide>
+              <ion-slide>
+                <canvas style="height: 12rem;" #lineCanvas></canvas>
+              </ion-slide>
+            </ion-slides>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" class="ion-padding-top">
+        <ion-row>
+          <ion-col class="table-header" size="1"><b>#</b></ion-col>
+          <ion-col class="table-header" size="4"><b>EMI (&#8377;)</b></ion-col>
+          <ion-col class="table-header" size="3"><b>Interest (&#8377;)</b></ion-col>
+          <ion-col class="table-header" size="4"><b>Balance (&#8377;)</b></ion-col>
+        </ion-row>
+        <ion-row *ngFor="let item of emiTenures; let idx = index" class="text-content">
+          <ion-col class="table-cell text-content-small" size="1">{{idx + 1}}</ion-col>
+          <ion-col class="table-cell" size="4">{{emiInfo.loanEmi | number : '1.2-2' }}</ion-col>
+          <ion-col class="table-cell" size="3">{{item.interestPaid | number : '1.2-2' }}</ion-col>
+          <ion-col class="table-cell" size="4">{{item.balance | number : '1.2-2' }}</ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
