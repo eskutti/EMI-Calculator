@@ -24,7 +24,8 @@ export class Tab1Page implements OnInit {
   calcInfo: any = {
     interestRate: 10,
     loanAmount: 100000,
-    tenure: 5
+    tenure: 5,
+    isYearly: true
   };
   emiInfo: any = {};
   constructor(public loadingController: LoadingController) { }
@@ -52,19 +53,19 @@ export class Tab1Page implements OnInit {
 
     let totalAmountTemp = this.calcInfo.loanAmount;
     let interest = this.calcInfo.interestRate / 1200;
-    let term = this.calcInfo.tenure * 12;
-    let top = Math.pow((1 + interest), term);
+    this.calcInfo.term = (this.calcInfo.isYearly? this.calcInfo.tenure * 12 : this.calcInfo.tenure);
+    let top = Math.pow((1 + interest), this.calcInfo.term);
     let bottom = top - 1;
     let ratio = top / bottom;
     let EMI = this.calcInfo.loanAmount * interest * ratio;
-    let Total = EMI * term;
+    let Total = EMI * this.calcInfo.term;
     this.emiInfo = {
       loanEmi: EMI,
       totalInterestPayment: (Total - this.calcInfo.loanAmount),
       totalPayment: Total
     }
 
-    for (let i = 0; i < term; i++) {
+    for (let i = 0; i < this.calcInfo.term; i++) {
       let intPaid = totalAmountTemp / 100 * this.calcInfo.interestRate / 12;
       totalAmountTemp -= (this.emiInfo.loanEmi - intPaid);
       this.emiTenures.push({
@@ -77,6 +78,7 @@ export class Tab1Page implements OnInit {
     setTimeout(() => this.initCharts());
   }
   initCharts() {
+    
     let labels = [];
     let interests = [];
     let principals = [];
@@ -85,8 +87,7 @@ export class Tab1Page implements OnInit {
     let outStandingAmounts = [];
     let totalAmount = this.calcInfo.loanAmount;
 
-    console.log(outStandingAmounts)
-    if (this.calcInfo.tenure === 1) {
+    if (this.calcInfo.term <= 12) {
       this.emiTenures.forEach(e => {
         totalint = e.interestPaid;
         totalPrinc = e.principalPaid;
@@ -96,7 +97,7 @@ export class Tab1Page implements OnInit {
         totalAmount -= totalPrinc;
         outStandingAmounts.push(totalAmount.toFixed(0));
       });
-    } else if (this.calcInfo.tenure === 2) {
+    } else if (this.calcInfo.term <= 24) {
       this.emiTenures.forEach((e) => {
         totalint += e.interestPaid;
         totalPrinc += e.principalPaid;

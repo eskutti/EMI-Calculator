@@ -22,10 +22,11 @@
           [value]="calcInfo.interestRate" pin="true" max="40"></ion-range>
       </ion-col>
       <ion-col size="6">
-        <ion-label position="floating">Tenure (Yearly)</ion-label>
+        <ion-toggle [color]="'success'" [(ngModel)]="calcInfo.isYearly" style="float: right; padding: 3px;" ></ion-toggle>
+        <ion-label position="floating" style="font-size: 12px;">Tenure ({{calcInfo.isYearly?'Yearly':'Monthly'}})</ion-label>
         <ion-input type="number" [(ngModel)]="calcInfo.tenure" placeholder="Tenure"> </ion-input>
         <ion-range color="danger" class="ion-no-padding" (ionChange)="onRangeChange($event, 'tenure')"
-          [value]="calcInfo.tenure" pin="true" max="30"></ion-range>
+          [value]="calcInfo.tenure" pin="true" [max]="calcInfo.isYearly?30:60"></ion-range>
       </ion-col>
       <ion-col size="12" class="ion-text-center ion-no-padding">
         <ion-button color="success" (click)="calc()" class="ion-text-center"> Calculate </ion-button>
@@ -76,7 +77,7 @@
         <ion-card>
           <ion-card-content>
             <ion-slides pager="true" [options]="slideOpts">
-              <ion-slide >
+              <ion-slide>
                 <canvas style="height: 12rem;" #pieCanvas></canvas>
               </ion-slide>
               <ion-slide>
